@@ -2,9 +2,12 @@ const FoldersService = require('../src/folders-service')
 const NotesService = require('../src/notes-service')
 const knex = require('knex')
 
+
+
   describe(`Notes service object`, function() {
   
     let db
+  
 
     /*let testFolders = [
       {
@@ -25,21 +28,21 @@ const knex = require('knex')
         id: 1,
         name: 'First test note!',
         folderid: 4,
-        modified: new Date(),
+        modified:  '2019-01-03T00:00:00.000',
         content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?'
       },
       {
         id: 2,
         name: 'Second test note!',
         folderid: 5,
-        modified: new Date(),
+        modified: '2019-01-03T00:00:00.000',
         content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum, exercitationem cupiditate dignissimos est perspiciatis, nobis commodi alias saepe atque facilis labore sequi deleniti. Sint, adipisci facere! Velit temporibus debitis rerum.'
       },
       {
         id: 3,
         name: 'Third test note',
         folderid: 6,
-        modified: new Date(),
+        modified: '2019-01-03T00:00:00.000',
         content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus, voluptate? Necessitatibus, reiciendis? Cupiditate totam laborum esse animi ratione ipsa dignissimos laboriosam eos similique cumque. Est nostrum esse porro id quaerat.'
       },
     ]
@@ -57,7 +60,12 @@ const knex = require('knex')
       return db
         .into('noteful_folders')
         .insert(testFolders)
-    })8?
+    })*/
+
+    before(() => db('noteful_notes', 'nuteful_folders').truncate())
+    
+    afterEach(() => db('noteful_notes', 'nuteful_folders').truncate())
+
 
     before (() => {
       return db
@@ -80,20 +88,62 @@ const knex = require('knex')
 
        
     
-    describe(`getAllNotes()`, () => {
+    context(`Given 'note' has data`, () => {
+         before(() => {
+           return db
+             .into('noteful_notes')
+             .insert(testNotes)
+         })
       
-           it(`resolves all articles from 'noteful_notes' table`, () => {
+         it(`getAllNotes() resolves all articles from 'noteful_notes' table`, () => {
             return NotesService.getAllNotes(db)
             .then(actual => {
-              expect(actual).to.eql(testNotes)
+              expect(actual).to.eql(testNotes.map(note => ({
+                           ...note,
+                           modified: new Date(note.modified)
             })
-           })
+           ))
          })
+    })
 
-after(() => db.destroy())
+    context(`Given 'noteful_notes' has no data`, () => {
+      it(`getAllNotes() resolves an empty array`, () => {
+      return NotesService.getAllNotes(db)
+        .then(actual => {
+          expect(actual).to.eql([])
+        })
+    })
+
+    it(`insertNote() inserts a new note and resolves the new article with an 'id'`, () => {
+      const newNote = {
+        id: 1,
+        name: 'First test note!',
+        folderid: 4,
+        modified:  '2019-01-03T00:00:00.000',
+        content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?'
+          }
+ 
+ 
+    return NotesService.insertNote(db, newNote)
+    .then(actual => {
+            expect(actual).to.eql({
+              id: 1,
+              name: newNote.name,
+              folderId: newNote.folderId,
+              modified: new Date(newNote.modified),
+              content: newNote.content
+            })
+          })
+        
+  
+  
+  })
+    
 
 
-})
+  })
+
+})})
 
          
        

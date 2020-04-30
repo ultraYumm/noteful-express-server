@@ -1,0 +1,14 @@
+{"message":"Card with id 88f12744-b67a-43fc-823a-620e7660a14a created","level":"info"}
+{"message":"Note with id 38fdda5b-c8fe-432c-a659-a7879a681176 created","level":"info"}
+{"message":"Note with id 5be39cba-d438-42cb-a611-e43dc6b1fff5 created","level":"info"}
+{"message":"Note with id 21a6b0a7-c27a-4a35-b6d9-5c0a19f10b95 created","level":"info"}
+{"message":"Name is required","level":"error"}
+{"message":"Note with id \"cbc787a0-ffaf-11e8-8eb2-f2801f1b9fd1\" deleted.","level":"info"}
+{"message":"Note with id \"cbc787a0-ffaf-11e8-8eb2-f2801f1b9fd1\" deleted.","level":"info"}
+{"message":"Note with id \"cbc787a0-ffaf-11e8-8eb2-f2801f1b9fd1\" not found.","level":"error"}
+{"message":"Note with id cbc787a0-ffaf-11e8-8eb2-f2801f1b9fd1 not found.","level":"error"}
+{"message":"Note with id cbc787a0-ffaf-11e8-8eb2-f2801f1b9fd1 deleted.","level":"info"}
+{"message":"Note with id 9cc10652-7dda-47ee-92d0-e0d64151f1a7 not found.","level":"error"}
+{"message":"Note with id 9cc10652-7dda-47ee-92d0-e0d64151f1a7 not found.","level":"error"}
+{"message":"Note with id 2279f8c6-8cbe-4f03-9542-d5bdca4d28b5 created","level":"info"}
+{"message":"Note with id 6658c727-c1b3-4224-9ce8-7e13d918578e created","level":"info"}

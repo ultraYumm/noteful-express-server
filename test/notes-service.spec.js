@@ -1,6 +1,5 @@
-const NotesService = require('../src/notes-service')
+const NotesService = require('../src/notes/notes-service')
 const knex = require('knex')
-
 
 
   describe(`Notes service object`, function() {
@@ -56,7 +55,7 @@ const knex = require('knex')
       })
     })
 
-    after(() => db.destroy())
+    //after(() => db.destroy())
 
     before('clean the table', () => db.raw('TRUNCATE noteful_folders, noteful_notes RESTART IDENTITY CASCADE'))
 
@@ -157,10 +156,3 @@ const knex = require('knex')
 
   })
     
-
-
-  
-
-
-
-         

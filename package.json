@@ -7,7 +7,7 @@
     "dev": "nodemon src/server.js",
     "migrate": "postgrator --config postgrator-config.js",
     "migrate:test": "env NODE_ENV=test npm run migrate",
-    "start": "node src/noteful.js",
+    "start": "node src/server.js",
     "predeploy": "npm audit",
     "deploy": "git push heroku master"
   },
@@ -22,6 +22,7 @@
     "knex": "^0.21.1",
     "morgan": "^1.10.0",
     "pg": "^8.0.3",
+    "random-int": "^2.0.1",
     "uuid": "^7.0.3",
     "winston": "^3.2.1"
   },

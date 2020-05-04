@@ -1,63 +1,55 @@
+const path = require('path')
 const express = require('express')
-const { v4: uuid } = require('uuid');
-const logger = require('../logger')
+const FoldersService = require('./folders-service')
 
 const foldersRouter = express.Router()
-const bodyParser = express.json()
-
-const notes = require ('../notes-data.js')
-const folders = require ('../folders-data.js')
-
+const jsonParser = express.json()
+const randomInt = require('random-int');
 
 foldersRouter
-  .route('/folders')
-  .get((req, res) => {
-    res.json(folders);
-    
+  .route('/')
+  .get((req, res, next) => {
+    FoldersService.getAllFolders(
+      req.app.get('db')
+    )
+      .then(folders => {
+        res.json(folders)
+      })
+      .catch(next)
   })
-  .post(bodyParser, (req, res) => {
-    const { name } = req.body;
+  .post(jsonParser, (req, res, next) => {
+    const { name } = req.body
 
-  if (!name) {
-    logger.error(`Name is required`);
-    return res
-      .status(400)
-      .send('Invalid data');
-  }
-  
-  const id = uuid();
+    const id = randomInt(50, 1000000000)
 
-  const modified = new Date();
-
-  const folder = {
-    id,
-    name
-  };
-
-folders.push(folder);
-logger.info(`Note with id ${id} created`);
-
-res
-  .status(201)
-  .location(`http://localhost:8000/folders/${id}`)
-  .json(folder);
+    const newFolder = { name }
+    FoldersService.insertFolder(
+      req.app.get('db'),
+      newFolder
+    )
+      .then(folder => {
+        res
+          .status(201)
+          .location(path.posix.join(req.originalUrl, `/${folder.id}`))
+          .json(folder)
+      })
+      .catch(next)
   })
 
 foldersRouter
-  .route('/folders/:id')
-  .get((req, res) => {
-    const { id } = req.params;
-  const folder = folders.find(f => f.id == id);
+  .route('/:folder_id')
+  .get((req, res, next) => {
+    const knexInstance = req.app.get('db')
+    FoldersService.getById(knexInstance, req.params.folder_id)
+      .then(folder => {
+        if (!folder) {
+          return res.status(404).json({
+            error: { message: `folder doesn't exist` }
+          })
+        }
+        res.json(folder)
+      })
+      .catch(next)
+  })
 
-  // make sure we found a folder
-  if (!folder) {
-    logger.error(`Folder with id ${id} not found.`);
-    return res
-      .status(404)
-      .send('Folder Not Found');
-  }
-
-  res.json(folder);
-})
-  
 module.exports = foldersRouter

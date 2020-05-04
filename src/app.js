@@ -6,7 +6,6 @@ const cors = require('cors')
 const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
 const app = express()
-
 const notesRouter = require('./notes/notes-router')
 const foldersRouter = require('./folders/folders-router')
 
@@ -23,10 +22,10 @@ console.log('knex and driver installed correctly')
 
 app.use(morgan(morganOption))
 
-app.use(helmet())
 app.use(cors())
-app.use(notesRouter)
-app.use(foldersRouter)
+app.use(helmet())
+app.use('/api/notes', notesRouter)
+app.use('/api/folders', foldersRouter)
 
 
 app.use(function errorHandler(error, req, res, next) {
@@ -41,10 +40,8 @@ app.use(function errorHandler(error, req, res, next) {
 })
 
 app.get("/", (req, res) =>{
-  res.send ('Hello, noteful-express-server!')
+  res.send ('Hello, noteful-express-api!')
 })
-
-
 
 
 

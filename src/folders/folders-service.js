@@ -1,5 +1,6 @@
 const FoldersService = {   
-    getAllFolders(knex) {
+    
+  getAllFolders(knex) {
         if(!knex){
             return null;
            }

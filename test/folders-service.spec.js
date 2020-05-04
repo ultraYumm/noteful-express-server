@@ -1,6 +1,7 @@
-const FoldersService = require('../src/folders-service')
+const FoldersService = require('../src/folders/folders-service')
 
 const knex = require('knex')
+const randomInt = require('random-int');
 
 
   describe(`Folders service object`, function() {

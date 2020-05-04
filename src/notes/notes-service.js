@@ -27,6 +27,13 @@ const NotesService = {
          .delete()
      },
 
+    
+    updateNote(knex, id, newNoteFields) {
+      return knex('noteful_notes')
+        .where({ id })
+        .update(newNoteFields)
+       },
+
         
 }
 

@@ -1,117 +1,125 @@
+const path = require('path')
 const express = require('express')
-const { v4: uuid } = require('uuid');
-const logger = require('../logger')
-const notes = require ('../notes-data.js')
-const folders = require ('../folders-data.js')
+const NotesService = require('./notes-service')
 
 const notesRouter = express.Router()
-const bodyParser = express.json()
+const jsonParser = express.json()
 
 notesRouter
-  .route('/notes')
-  .get((req, res) => {
-    res.json(notes);
-    
+  .route('/')
+  .get((req, res, next) => {
+    NotesService.getAllNotes(
+      req.app.get('db')
+    )
+      .then(notes => {
+        res.json(notes)
+      })
+      .catch(next)
   })
-  .post(bodyParser, (req, res) => {
-            const { name, content, folderId } = req.body;
-      
-        if (!name) {
-          logger.error(`Name is required`);
-          return res
-            .status(400)
-            .send('Invalid data');
+  .post(jsonParser, (req, res, next) => {
+    const { name, content, folderid } = req.body
+
+    const newNote = { name, content, folderid }
+    NotesService.insertNote(
+      req.app.get('db'),
+      newNote
+    )
+      .then(note => {
+        res
+          .status(201)
+          .location(path.posix.join(req.originalUrl, `/${note.id}`))
+          .json(note)
+      })
+      .catch(next)
+  })
+
+notesRouter
+  .route('/:note_id')
+  .get((req, res, next) => {
+    const knexInstance = req.app.get('db')
+    NotesService.getById(knexInstance, req.params.note_id)
+      .then(note => {
+        if (!note) {
+          return res.status(404).json({
+            error: { message: `note doesn't exist` }
+          })
+        }
+        res.json(note)
+      })
+      .catch(next)
+  })
+
+notesRouter
+  .route('/:note_id')
+  .delete((req, res, next) => {
+    const knexInstance = req.app.get('db')
+    NotesService.deleteNote(knexInstance, req.params.note_id)
+      .then(note => {
+        if (!note) {
+          return res.status(404).json({
+            error: { message: `note doesn't exist` }
+          })
+        }
+        res.json(note)
+      })
+      .catch(next)
+
+    })
+
+notesRouter
+  .route('/:note_id')  
+  .patch(jsonParser, (req, res, next) => {
+    const { name, content, folderid } = req.body
+    const noteToUpdate = { name, content, folderid }
+
+    const numberOfValues = Object.values(noteToUpdate).filter(Boolean).length
+   if (numberOfValues === 0) {
+     return res.status(400).json({
+       error: {
+         message: `Request body must contain 'name' or 'content' and 'folderid'`
+       }
+     })
+   }
+
+
+    NotesService.updateNote(
+      req.app.get('db'),
+      req.params.note_id,
+      noteToUpdate
+    ) 
+      .then(note => {
+        if (!note) {
+          return res.status(404).json({
+            error: { message: `Note doesn't exist` }
+          })
         }
         
-        if (!content) {
-          logger.error(`Content is required`);
-          return res
-            .status(400)
-            .send('Invalid data');
-        }
-      
-        if (!folderId) {
-          logger.error(`folderId is required`);
-          return res
-            .status(400)
-            .send('Invalid data');
-        }
-       
-        if (folders.length > 0) {
-          let valid = true;
-          const validId = folders.find(f => f.id == folderId);
-            if (!validId) {
-              logger.error(`Folder with id ${folderId} not found in folder array.`);
-              valid = false;
-            }
-          ;
-      
-          if (!valid) {
-            return res
-              .status(400)
-              .send('Invalid data');
-          }
-        }
-      
-        const id = uuid();
-      
-        const modified = new Date();
-      
-        const note = {
-          id,
-          name,
-          modified,
-          folderId,
-          content,    
-        };
-      
-      notes.push(note);
-      logger.info(`Note with id ${id} created`);
-      
-      res
-        .status(201)
-        .location(`http://localhost:8000/notes/${id}`)
-        .json(note);
-      
-      })
-      
-    
-notesRouter
-  .route('/notes/:id')
-  .get((req, res) => {{
-  const { id } = req.params;
-  const note = notes.find(n => n.id == id);
-
-  // make sure we found a note
-  if (!note) {
-    logger.error(`Note with id ${id} not found.`);
-    return res
-      .status(404)
-      .send('Note Not Found');
-  }
-
-  res.json(note);
-}})
-
-.delete((req, res) => {
-    const { id } = req.params;
-
-    const noteIndex = notes.find(n => n.id == id);
+      res.status(204).end()
+    })
+      .catch(next)
+  })
   
-    if (!noteIndex) {
-      logger.error(`Note with id ${id} not found.`);
-      return res
-        .status(404)
-        .send('Not Found');
-    }
-  
-    notes.splice(noteIndex, 1);
-  
-    logger.info(`Note with id ${id} deleted.`);
-    res
-      .status(204)
-      .end();
-  });
-  
- 
+
+
+
+
 module.exports = notesRouter
+
+/*notesRouter
+  .route('/:note_id')  
+  .patch(jsonParser, (req, res, next) => {
+    const { name, content, folderid } = req.body
+    const noteToUpdate = { name, content, folderid }
+
+    NotesService.updateNote(
+      req.app.get('db'),
+      req.params.note_id,
+      noteToUpdate
+    ) 
+      .then(
+       
+       numRowsAffected => {
+      res.status(204).end()
+      })
+      .catch(next)
+  })*/

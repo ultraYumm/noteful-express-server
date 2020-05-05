@@ -98,7 +98,6 @@ describe (`POST /api/folders`, () => {
             .expect(res => {
                         expect(res.body.name).to.eql(newFolder.name)
                         expect(res.headers.location).to.eql(`/api/folders/${res.body.id}`)
-                        
                     })
         
         })

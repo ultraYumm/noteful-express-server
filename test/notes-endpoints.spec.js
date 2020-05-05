@@ -101,8 +101,6 @@ describe('notes/:id endpoints', () => {
     
     
   
-    
-
     describe (`DELETE /api/notes/:note_id`, () => {
            context('Given there are notes in the database', () => {
 
@@ -246,39 +244,59 @@ describe('notes/:id endpoints', () => {
 
                        })
 
-                       describe.only(`POST notes`, () => {
-                        it(`creates a note, responding with 201 and the new note`,  function() {
-                               const newNote = {
-                                 name: 'Test name',
-                                 content: 'content',
-                                 folderid: 1
-                               }
-                                return supertest(app)
-                                 .post('/notes')
-                                 .send(newNote)
-                                 .expect(201)
-                                 .expect(res => {
-                                  expect(res.body.name).to.eql(newNote.name)
-                                  expect(res.body.content).to.eql(newNote.content)
-                                  expect(res.body.folderid).to.eql(newNote.folderid)
-                                  expect(res.body).to.have.property('id')
-                                  expect(res.body).to.have.property('modified')
-                                  expect(res.headers.location).to.eql(`/api/notes/${res.body.id}`)
-                                 })
-                                 
-                                 .then(postRes =>
-                                           supertest(app)
-                                             .get(`/notes/${postRes.body.id}`)
-                                             .expect(postRes.body)
-                         
-                         
-                         
-                            )})
+    describe(`POST notes`, () => {
 
 
-                          })
-             
-                        })
+      context('Given there are notes in the database', () => {
+
+        const testNotes = makeNotesArray()
+        const testFolders = makeFoldersArray()
+
+    
+         beforeEach('insert folders', () => {
+            return db
+            .into('noteful_folders')
+            .insert(testFolders)
+           
+          }
+     )
+
+
+    it(`creates a note, responding with 201 and the new note`,  function() {
+            const newNote = {
+              id: 10000,
+              name: 'Test name',
+              content: 'content',
+              folderid: 1 }
+
+            return supertest(app)
+              .post(`/api/notes`)
+              .send(newNote)
+              .expect(201)
+              .expect(res => {
+              expect(res.body.name).to.eql(newNote.name)
+              expect(res.body.content).to.eql(newNote.content)
+              expect(res.body.folderid).to.eql(newNote.folderid)
+              expect(res.body).to.have.property('id')
+              expect(res.body).to.have.property('modified')
+              expect(res.headers.location).to.eql(`/api/notes/${res.body.id}`)
+              })
+              
+           /*   .then(postRes =>
+                        supertest(app)
+                          .get(`api/notes/${postRes.body.id}`)
+                          .expect(postRes.body)
+   
+      
+        )*/
+      
+      })
+
+
+      })
+    })
+
+})
            
     
 

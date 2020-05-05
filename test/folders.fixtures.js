@@ -2,15 +2,15 @@ function makeFoldersArray() {
     return [
             {
                 id: 1,
-                name: 'First test folder!'
+                name: 'Important',
             },
             {
                 id: 2,
-                name: 'Second test folder!',
+                name: 'Super',
             },
             {
                 id: 3,
-                name: 'Third test folder',
+                name: 'Spangley',
             },
           ]
      

@@ -10,9 +10,14 @@
     "start": "node src/server.js",
     "predeploy": "npm audit",
     "deploy": "git push heroku master",
-    "build": "echo 'build script executed'"
+    "build": "react-scripts build",
+    "serve": "serve -s build",
+    "preserve": "npm run build"
   },
   "keywords": [],
+  "engines": {
+    "node": "13.7.0"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {

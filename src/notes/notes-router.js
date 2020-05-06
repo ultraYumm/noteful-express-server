@@ -73,7 +73,7 @@ notesRouter
     const { name, content, folderid } = req.body
     const modified = new Date ()
     const noteToUpdate = { name, content, folderid, modified }
-    const requiredValues = { name, content, folderid }
+    const requiredValues = { name, content, folderid, modified }
 
     const numberOfValues = Object.values(requiredValues).filter(Boolean).length
       if (numberOfValues === 0) {

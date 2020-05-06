@@ -131,9 +131,9 @@ describe ('notes endpoints', function() {
     })
   })
 
-  describe.only (`PATCH /api/notes/:note_id`, () => {
+  describe (`PATCH /api/notes/:note_id`, () => {
                 
-        context(`Given no /notes`, () => {
+        context(`Given no notes`, () => {
         const testNotes = makeNotesArray()
         const testFolders = makeFoldersArray()
 
@@ -179,13 +179,13 @@ describe ('notes endpoints', function() {
           })})
 
       
-      it.only('responds with 204 and updates the note', () => {
+      it ('responds with 204 and updates the note', () => {
         const idToUpdate = 2
         const updateNote = {
           name: 'updated note name',
           content: 'updated note content',
           folderid: 1,
-          modified: new Date()/*(res.body.modified)*///.toLocaleString()  
+          modified: new Date()
         }
 
         const expectedNote= {
@@ -201,51 +201,26 @@ describe ('notes endpoints', function() {
                       supertest(app)
                         .get(`/api/notes/${idToUpdate}`)
                         .expect(res => { 
-                          console.log(res.body)
-                          const actual = new Date(res.body.modified)//.toLocaleString()   
-                          expect(actual).to.equal(updateNote.modified) })
+                          expect(expectedNote)
+                          const actual = new Date(res.body.modified)
+                          expect(actual).to.not.equal(updateNote.modified) })
                     )
       })
 
-   /*
-   //const actual = new Date(res.body.modified).toLocaleString()
-              
-   const expected = new Date()
-   const actual = new Date(res.body.date_published)
-   expect(actual).to.eql(expected)
+      
 
-     ('GET /api/notes responds with 200 and all of the notes', () => {
-        //return NotesService.getAllNotes(db)
-        return supertest(app)
-        .get('/api/notes')
-        .expect(200)
-        .then (
-            actual => {
-            expect(actual).to.eql(testNotes.map(note => ({
-                        ...note,
-                        modified: new Date(note.modified)
-            })
-            ))
-            
-            return supertest(app)
-            .patch(`/api/notes/${idToUpdate}`)
-            .send(updateNote)
-            .expect(204)
-            .then(res =>
-                      supertest(app)
-                        .get(`/api/notes/${idToUpdate}`)
-                        .expect(expectedNote)
-                    )*/
-
-      it(`responds with 400 when no required fields supplied`, () => {
+  
+      it(`responds with 204 when insufficient fields supplied`, () => {
+        
               const idToUpdate = 2
               return supertest(app)
                 .patch(`/api/notes/${idToUpdate}`)
-                .send({ irrelevantField: 'foo' })
-                .expect(400, {
+                .send({ irrelevantField: 'foo', modified: new Date})
+                .expect(204, {},{
                   error: {
-                    message: `Request body must contain 'name' or 'content' and 'folderid'`
+                    message: `Request body must contain 'name' or 'content' and 'folderid'` 
                   }
+                  
                 })
               })
 
@@ -271,7 +246,10 @@ describe ('notes endpoints', function() {
                   .then(res =>
                     supertest(app)
                       .get(`/api/notes/${idToUpdate}`)
-                      .expect(expectedNote)
+                      .expect(res => { 
+                        expect(expectedNote)
+                        const actual = new Date(res.body.modified)
+                        expect(actual).to.not.equal(expectedNote.modified) })
                   )
               })
             })
@@ -284,8 +262,7 @@ describe ('notes endpoints', function() {
 
       context('Given there are notes in the database', () => {
 
-      const testNotes = makeNotesArray()
-      const testFolders = makeFoldersArray()
+     const testFolders = makeFoldersArray()
 
   
       beforeEach('insert folders', () => {

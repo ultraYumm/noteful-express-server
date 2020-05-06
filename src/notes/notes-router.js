@@ -73,14 +73,15 @@ notesRouter
     const { name, content, folderid } = req.body
     const modified = new Date ()
     const noteToUpdate = { name, content, folderid, modified }
-    const requiredValues = { name, content, folderid, modified }
+    const requiredValues = { name, content, folderid }
 
     const numberOfValues = Object.values(requiredValues).filter(Boolean).length
       if (numberOfValues === 0) {
-        return res.status(400).json({
+        return res.status(204).json({
           error: {
             message: `Request body must contain 'name' or 'content' and 'folderid'`
           }
+         
      })
    }
 

@@ -71,9 +71,11 @@ notesRouter
   .route('/:note_id')  
   .patch(jsonParser, (req, res, next) => {
     const { name, content, folderid } = req.body
-    const noteToUpdate = { name, content, folderid }
+    const modified = new Date ()
+    const noteToUpdate = { name, content, folderid, modified }
+    const requiredValues = { name, content, folderid }
 
-    const numberOfValues = Object.values(noteToUpdate).filter(Boolean).length
+    const numberOfValues = Object.values(requiredValues).filter(Boolean).length
       if (numberOfValues === 0) {
         return res.status(400).json({
           error: {

@@ -150,7 +150,8 @@ describe ('notes endpoints', function() {
         const newNote = {
                 name: "Dogs Post Test",
                 content: "Post Test content",
-                folderid: 1               
+                folderid: 1,
+                modified: new Date ()            
             }  
 
         it(`responds with 404`, () => {
@@ -183,7 +184,8 @@ describe ('notes endpoints', function() {
         const updateNote = {
           name: 'updated note name',
           content: 'updated note content',
-          folderid: 1
+          folderid: 1,
+          modified: new Date ()         
         }
 
         const expectedNote= {
@@ -217,9 +219,10 @@ describe ('notes endpoints', function() {
       it(`responds with 204 when updating only a subset of fields`, () => {
                 const idToUpdate = 2
                 const updateNote = {
-              name: 'updated note name',
-              folderid: 2
-                }
+                    name: 'updated note name',
+                    folderid: 2, 
+                    modified: new Date ()     
+                      }
                 const expectedNote = {
                   ...testNotes[idToUpdate - 1],
                   ...updateNote

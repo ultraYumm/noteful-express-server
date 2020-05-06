@@ -1,5 +1,6 @@
 const NotesService = {   
-    getAllNotes(knex) {
+    
+  getAllNotes(knex) {
         if(!knex){
             return null;
            }
@@ -26,7 +27,6 @@ const NotesService = {
          .where({ id })
          .delete()
      },
-
     
     updateNote(knex, id, newNoteFields) {
       return knex('noteful_notes')

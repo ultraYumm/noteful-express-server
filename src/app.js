@@ -18,8 +18,6 @@ const knexInstance = knex({
    connection: process.env.DATABASE_URL
   })  
 
-
-
 app.use(morgan(morganOption))
 
 app.use(cors())

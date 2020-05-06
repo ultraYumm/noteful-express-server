@@ -26,7 +26,7 @@ describe ('notes endpoints', function() {
     after(() => db.destroy())
 
 
-describe(`GET /api/notes`, () => {
+describe (`GET /api/notes`, () => {
 
     context(`Given no notes`, () => {
         it(`responds with 200 and an empty list`, () => {
@@ -57,17 +57,24 @@ describe(`GET /api/notes`, () => {
     .get('/api/notes')
     .expect(200)
     .then (
-        actual => {
-        expect(actual).to.eql(testNotes.map(note => ({
+        res => {
+        /*expect(res.body).to.eql(testNotes.map(note => ({
                     ...note,
                     modified: new Date(note.modified)
         })
-        ))
+    
+       ))*/
+        expect(res.body).to.eql(testNotes)
+        })
+    
+       
+
+
     })
     
     })
    })
- })
+ 
 
 describe('notes/:id endpoints', () => {
 

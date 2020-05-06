@@ -49,10 +49,10 @@ describe (`GET /api/folders`, () => {
     return supertest(app)
     .get('/api/folders')
     .expect(200)
-    .then (
-        actual => {
-        console.log("RESPONSE:", actual)
-        expect(actual).to.eql(testFolders
+    .expect (
+        res => {
+        console.log("RESPONSE:", res.body)
+        expect(res.body).to.eql(testFolders
         )}
         )
     })

@@ -51,7 +51,6 @@ describe (`GET /api/folders`, () => {
     .expect(200)
     .expect (
         res => {
-        console.log("RESPONSE:", res.body)
         expect(res.body).to.eql(testFolders
         )}
         )
